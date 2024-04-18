@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 
 /// A widget that displays a list of Cluans and provides sorting options.
 class CluansWidget extends StatelessWidget {
-
   /// Constructs a new [CluansWidget] instance.
   ///
   /// The [model] parameter specifies the CluansModel containing the list of Cluans.
@@ -16,27 +15,38 @@ class CluansWidget extends StatelessWidget {
     // Formatter for displaying dates
     final DateFormat dateFormatter = DateFormat('yyyy-dd-MM');
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Cluans',
-          style: TextStyle(
-            fontWeight: FontWeight.bold, color: Colors.white
-          )
+    return Consumer<CluansModel>(builder: (context, model, child) {
+      return Scaffold(
+        appBar: AppBar(
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                model.sortByClue();
+              },
+              child: const Text('Sort by Clue'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                model.sortByAnswer();
+              },
+              child: const Text('Sort by Answer'),
+            ),
+          ],
+          title: const Text('Cluans',
+              style:
+                  TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
         ),
-      ),
-      body: Consumer<CluansModel>(
-        builder: (context, model, child) {
-          return Column(
-            children: [
-              Expanded(
-                child: ListView.separated(
+        body: Column(
+          children: [
+            Expanded(
+              child: ListView.separated(
                   itemCount: model.cluans.length,
                   itemBuilder: (context, index) {
                     String answer = model.cluans[index].answer;
                     String clue = model.cluans[index].clue;
-                    String date = dateFormatter.format(model.cluans[index].date);
-          
+                    String date =
+                        dateFormatter.format(model.cluans[index].date);
+
                     return ListTile(
                       title: Text(answer),
                       subtitle: Text(clue),
@@ -44,29 +54,12 @@ class CluansWidget extends StatelessWidget {
                     );
                   },
                   separatorBuilder: (context, index) => const Divider(
-                    color: Colors.blue, 
-                    thickness: 1.0, height: 1.0
-                  )
-                ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  ElevatedButton(
-                    onPressed: () { model.sortByClue(); },
-                    child: const Text('Sort by Clue'),
-                  ),
-                  ElevatedButton(
-                    onPressed: () { model.sortByAnswer(); },
-                    child: const Text('Sort by Answer'),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 40),
-            ],
-          );
-        },
-      )
-    );
+                      color: Colors.blue, thickness: 1.0, height: 1.0)),
+            ),
+            const SizedBox(height: 40),
+          ],
+        ),
+      );
+    });
   }
 }
